@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        d3.select('body').selectAll('div').data([5,6,2,8,4,9,1,4.20,6.9,6.66]).enter().append('div').text(d => `$${d.toFixed(2)}`)
+        .style('padding', '1em 2em')
+        .style('background-color', 'red')
+        .style('margin', '1px')
+        .style('width', d => `${d / 10 * 100}%`)
+        .style('height', '3rem')
+        .style('border-radius', '3rem')
+        .style('background', 'linear-gradient(to left, #e66465, #9198e5)')
+        .style('color', d => d>5 ? 'white' : 'black')
+        .style('font-family', 'Helvetica')
+        .style('display', 'flex')
+        .style('align-items', 'center')
+        .style('opacity', d => `${d/10}`)
+    </script>
+</body>
+</html>
