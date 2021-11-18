@@ -26,27 +26,58 @@
     d3.csv('./data/precipitation.csv')
         .then(handleData)
     function handleData(data) {
+        // const
+        const width = 600
+        const height = 400
+        const margin = 40
         // helpers
         const ldata = (loc) => getDataForState(data, `${loc}`)
-        const xscale = d3.scaleLinear()
-            .domain([0, ldata('BA').length])
-            .range([40, 560])
+        const parseTime = d3.timeParse('%d/%m/%Y')
+        ldata('BA').forEach(d => d.date = parseTime(d.date))
+        // Find the extents of the dates
+        const dateExtent = d3.extent(ldata('BA'), d => d.date)
+        const xscale = d3.scaleTime()
+            .domain(dateExtent)
+            .range([margin, width - margin])
+            .nice()
         const percipitationExtents = d3.extent(ldata('BA'), d => d.precipitation)
         const yscale = d3.scaleLinear()
             .domain(percipitationExtents)
-            .range([360, 40])
+            .range([height-margin, margin])
         const linegen = d3.line()
-            .x((d, i) => xscale(i))
+            .x(d => xscale(d.date))
             .y(d => yscale(d.precipitation))
             .curve(d3.curveLinear)
+        
         // draw
-        d3.select('#svg')
+        // graph
+        const svg = d3
+            .select('#svg')
+        svg
             .append('path')
             .attr('d', linegen(ldata('BA')))
             .attr('stroke-width', 3)
             .attr('stroke', 'cornflowerblue')
             .attr('fill', 'none')
-
+        // axis
+        const graph = svg
+            .append('g')
+        const bottomAxis = d3.axisBottom(xscale)
+        const leftAxis = d3.axisLeft(yscale)
+        graph
+            .append('path')
+            .attr('d', linegen(ldata('BA')))
+            .attr('stroke-width', 1)
+            .attr('stroke', 'cornflowerblue')
+            .attr('fill', 'none')
+        svg
+            .append('g')
+            .attr('transform', `translate(0, ${height - margin})`)
+            .call(bottomAxis)
+        svg
+            .append('g')
+            .attr('transform', `translate(${margin}, 0)`)
+            .call(leftAxis)
     }
     function getDataForState(data, state) {
         const arr = data
