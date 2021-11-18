@@ -30,6 +30,7 @@
                 const popScale = d3.scaleSqrt()
                     .domain(popExtent)
                     .range([10, 200])
+                    
                 // init
                 const node = d3.select('#svg')
                     .style('border', '1px solid')
@@ -38,7 +39,9 @@
                     .enter()
                 const groups = node
                     .append('g')
+
                 // components
+                // circle
                 groups
                     .append('circle')
                     .attr('cx', d => xScale(d.x))
@@ -47,6 +50,7 @@
                     .attr('fill', `red`)
                     .attr('opacity', 0.25)
                     .attr('fill', d => countryScale(d.country))
+                // words
                 const angle = Math.PI * 1.75
                 groups
                     .append('text')
@@ -55,6 +59,7 @@
                     .attr('y', d => yScale(d.y) - Math.sin(angle) * popScale(d.population))
                     .style('font-family', 'Helvetica')
                     .style('font-size', '18px')
+                // line
                 groups
                     .append('path')
                     .attr('d', d => {
@@ -68,6 +73,7 @@
                     })
                     .attr('stroke', '#000')
                     .attr('fill', 'none')
+                // legend
                 node
                     .append('text')
                     .text(d => `${d.label} ${d.country}`)
