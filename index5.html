@@ -13,11 +13,11 @@
     <script>
         d3.csv('./data/cities.csv')
             .then(data => {
+                // variables and helpers
                 const xExtent = d3.extent(data, d => parseFloat(d.x))
                 const yExtent = d3.extent(data, d => parseFloat(d.y))
                 const popExtent = d3.extent(data, d => parseFloat(d.population))
                 const countries = Array.from(new Set(data.map(d => d.country)))
-
                 const xScale = d3.scaleLinear()
                     .domain(xExtent) // Set the domain
                     .range([800, 0])     // Set the range
@@ -30,7 +30,7 @@
                 const popScale = d3.scaleSqrt()
                     .domain(popExtent)
                     .range([10, 200])
-                
+                // init
                 const node = d3.select('#svg')
                     .style('border', '1px solid')
                     .selectAll('g')
@@ -38,7 +38,7 @@
                     .enter()
                 const groups = node
                     .append('g')
-                
+                // components
                 groups
                     .append('circle')
                     .attr('cx', d => xScale(d.x))
@@ -68,7 +68,17 @@
                     })
                     .attr('stroke', '#000')
                     .attr('fill', 'none')
-
+                node
+                    .append('text')
+                    .text(d => `${d.label} ${d.country}`)
+                    .attr('x', 0)
+                    .attr('y', (d,i) => 800-i*20)
+                    .style('margin', '2px')
+                    .style('font-family', 'Helvetica')
+                    .style('font-size', '18px')
+                    .selectAll('text')
+                    .style('display', 'flex')
+                    .style('flex-direction', 'column')
             })
     </script>
 </body>
