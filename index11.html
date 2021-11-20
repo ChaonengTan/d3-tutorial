@@ -21,6 +21,12 @@
 </head>
 <body>
     <svg id="svg" width="600" height="400"></svg>
+    <select>
+        <option>1901</option>
+        <option>1902</option>
+        <option>1903</option>
+    </select>
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script>
         async function handleData() {
@@ -39,23 +45,21 @@
             const height = 300
             const margin = 40
 
-            const year_1901 = data[0]
-            const year_1902 = data[1]
-            const months_1901 = convertToArray(year_1901)
-            const months_1902 = convertToArray(year_1902)
+            let year = data[0]
+            let months = convertToArray(year)
             // console.log(months_1901)
             // draw
             const svg = d3
                 .select('#svg')
             const graph = svg
                 .append('g')
-            const drawData = (data, col, axis=false) => {
+            const drawData = (da, col, axis=false) => {
                 // scales
                 const xscale = d3.scaleLinear()
-                    .domain([0, data.length - 1])
+                    .domain([0, da.length - 1])
                     .range([margin, width - margin])
                 const yscale = d3.scaleLinear()
-                    .domain(d3.extent(data, d => d.temp))
+                    .domain(d3.extent(da, d => d.temp))
                     .range([height - margin, margin])
                 // helper
                 const linegen = d3.area()
@@ -64,9 +68,9 @@
                     .y1(height - margin)
                     .curve(d3.curveStep)
                 // graph
-                graph
+                const path = graph
                     .append('path')
-                    .attr('d', linegen(data))
+                    .attr('d', linegen(da))
                     .attr('stroke-width', 1)
                     .attr('stroke', 'none')
                     .attr('fill', `${col}`)
@@ -88,10 +92,17 @@
                         .attr('transform', `translate(${margin}, 0)`)
                         .call(leftAxis)
                 }
+                // event listener
+                document.querySelector('select')
+                    .addEventListener('change', e => {
+                        const index = parseInt(e.target.value)-1901
+                        months = convertToArray(data[index])
+                        path.attr('d', linegen(months))
+                    })
             }
-            drawData(months_1901, 'red')
-            drawData(months_1902, 'yellow', true)
+            drawData(months, 'red', true)
         }
+        
         handleData()
     </script>
 </body>
